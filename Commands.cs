@@ -38,7 +38,7 @@ public class CreateProfileModule : ModuleBase<SocketCommandContext> {
             // Create a new user with that ID
             User user = new User(id);
             // Check if the user already exists
-            if (File.Exists($"{id}.json")){
+            if (File.Exists( "users/" + id +".json" )){
                 throw new Exception();
             };
             // Save the user
@@ -97,8 +97,9 @@ public class HarvestModule : ModuleBase<SocketCommandContext> {
             int peanutsHarvested = 0;
             if (user.sandwiches >= 5) {
                 var multiplier = decimal.Divide(user.sandwiches, 5);
-                peanutsHarvested = (int)Math.Round(multiplier);
-                user.peanuts += (int)Math.Round(multiplier);
+                peanutsHarvested = ((int)Math.Round(multiplier)+1) * 2;
+                user.peanuts += (int)Math.Round(multiplier) * 2;
+                // add edge case for if user has a lot of sandwiches
             } else {
                 peanutsHarvested = 2;
                 user.peanuts += 2;

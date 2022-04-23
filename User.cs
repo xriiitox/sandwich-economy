@@ -12,11 +12,11 @@ public class User {
     }
     public static void Save(string userID, User user) {
         string json = JsonConvert.SerializeObject(user);
-        File.WriteAllText(userID + ".json", json);
+        File.WriteAllText("users/" + userID + ".json", json);
     }
 
     public static User Load(string userID) {
-        string json = File.ReadAllText(userID + ".json");
+        string json = File.ReadAllText("users/" + userID + ".json");
         return JsonConvert.DeserializeObject(json, typeof(User)) as User;
     }
 }
