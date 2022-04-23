@@ -108,11 +108,16 @@ public class HarvestModule : ModuleBase<SocketCommandContext> {
             // Save the user
             User.Save(id, user);
             // Set embed data
-            embed.AddField("**Harvest**", $"\n{username} has harvested {peanutsHarvested} peanuts. \nYou now have {user.peanuts}", true);
+            embed.AddField("**Harvest**", $"\n{username} has harvested {peanutsHarvested} peanuts. \nYou now have {user.peanuts}", true)
+            .WithColor(Color.Green)
+            .WithFooter($"Requested by {username}")
+            .WithCurrentTimestamp();
 
             await ReplyAsync(embed: embed.Build());
         } catch (IOException e) {
-            embed.AddField("**ERROR**", $"\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true);
+            embed.AddField("**ERROR**", $"\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            .WithColor(Color.Red)
+            .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
         }
     }
@@ -133,11 +138,16 @@ public class BakeModule : ModuleBase<SocketCommandContext> {
             // Save the user data
             User.Save(id, user);
             // Set embed data
-            embed.AddField("**Bake**", $"\n{username} has baked one slice of bread. \nYou now have {user.breadSlices} slices.", true);
+            embed.AddField("**Bake**", $"\n{username} has baked one slice of bread. \nYou now have {user.breadSlices} slices.", true)
+            .WithColor(Color.Green)
+            .WithFooter($"Requested by {username}")
+            .WithCurrentTimestamp();
 
             await ReplyAsync(embed: embed.Build());
         } catch (IOException e) {
-            embed.AddField("**ERROR**", $"\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true);
+            embed.AddField("**ERROR**", $"\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            .WithColor(Color.Red)
+            .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
         }
     }
@@ -162,15 +172,23 @@ public class MashModule : ModuleBase<SocketCommandContext> {
                 // Save the user data
                 User.Save(id, user);
                 // Send a message to the channel with the number of peanut butter jars the user now has
-                embed.AddField("**Mash**", $"\n{username} has mashed 5 peanuts to make one jar of peanut butter. \nYou now have {user.peanutButterJars} peanut butter jars, and {user.peanuts} peanuts.", true);
+                embed.AddField("**Mash**", $"\n{username} has mashed 5 peanuts to make one jar of peanut butter. \nYou now have {user.peanutButterJars} peanut butter jars, and {user.peanuts} peanuts.", true)
+                .WithColor(Color.Green)
+                .WithFooter($"Requested by {username}")
+                .WithCurrentTimestamp();
+
                 await ReplyAsync(embed: embed.Build());
             } else {
                 // Send a message to the channel saying the user doesn't have enough peanuts
-                embed.AddField("**Problem Encountered!**", $"\n{Context.User.Username} doesn't have enough peanuts to mash.", true);
+                embed.AddField("**Problem Encountered!**", $"\n{Context.User.Username} doesn't have enough peanuts to mash.", true)
+                .WithColor(Color.Red)
+                .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             }
         } catch (IOException e) {
-            embed.AddField("**ERROR**", $"\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true);
+            embed.AddField("**ERROR**", $"\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            .WithColor(Color.Red)
+            .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
         }
 

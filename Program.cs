@@ -12,10 +12,22 @@ public class Program {
     public static Task Main(string[] args) => new Program().MainAsync();
 
 	public async Task MainAsync() {
-        _client = new DiscordSocketClient();
-        _commands = new CommandService();
+        _client = new DiscordSocketClient(new DiscordSocketConfig {
+            LogLevel = LogSeverity.Verbose,
+            GatewayIntents = GatewayIntents.All,
+            MessageCacheSize = 100,
+            AlwaysDownloadUsers = true,
+            LogGatewayIntentWarnings = false
+        });
+        _commands = new CommandService(new CommandServiceConfig {
+            CaseSensitiveCommands = false,
+            DefaultRunMode = RunMode.Async,
+            LogLevel = LogSeverity.Verbose,
+            SeparatorChar = ' '
+        });
         _handler = new CommandHandler(_client, _commands);
         _client.Log += Log;
+        await _handler.InstallCommandsAsync();
         string token;
         try {
             token = File.ReadAllText("token.txt");
@@ -27,8 +39,6 @@ public class Program {
         }
         await _client.LoginAsync(TokenType.Bot, token);
         await _client.StartAsync();
-
-        await _handler.InstallCommandsAsync();
 
         await Task.Delay(-1);
         
