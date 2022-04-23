@@ -6,6 +6,7 @@ using Discord;
 
 // TODO: make a shop with powerups and collectables, with a shop command and buy command
 // also money to actually buy stuff and sell sandwiches for
+// add multipliers for each item
 
 public class HelpModule : ModuleBase<SocketCommandContext> {
     [Command("help")]
@@ -99,7 +100,7 @@ public class HarvestModule : ModuleBase<SocketCommandContext> {
                 var multiplier = decimal.Divide(user.sandwiches, 5);
                 peanutsHarvested = ((int)Math.Round(multiplier)+1) * 2;
                 user.peanuts += (int)Math.Round(multiplier) * 2;
-                // add edge case for if user has a lot of sandwiches
+                // change this when powerups are added so that it reads from powerups
             } else {
                 peanutsHarvested = 2;
                 user.peanuts += 2;
