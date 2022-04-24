@@ -4,7 +4,7 @@ using Discord;
 public class User {
     string id;
     public string username;
-    public int sandwiches, peanuts, breadSlices, peanutButterJars;
+    public long sandwiches, peanuts, breadSlices, peanutButterJars;
     public bool isAdmin;
     public User(string userID, string username) {
         id = userID;

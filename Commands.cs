@@ -4,9 +4,10 @@ using Discord;
 // Keep in mind your module **must** be public and inherit ModuleBase.
 // If it isn't, it will not be discovered by AddModulesAsync!
 
-// TODO: make a shop with powerups and collectables, with a shop command and buy command
+// TODO: make a shop with powerups and collectables, with a shop listing command and buy command
 // also money to actually buy stuff and sell sandwiches for
 // add multipliers for each item
+// Also make shop read from json, add a command to change prices and add new items without editing json
 
 public class CreateProfileModule : ModuleBase<SocketCommandContext> {
     [Command("createprofile")]
@@ -78,7 +79,7 @@ public class HarvestModule : ModuleBase<SocketCommandContext> {
             int peanutsHarvested = 0;
             if (user.sandwiches >= 5) {
                 var multiplier = decimal.Divide(user.sandwiches, 5);
-                peanutsHarvested = ((int)Math.Round(multiplier)+1) * 2;
+                peanutsHarvested = ((int)Math.Round(multiplier)) * 2;
                 user.peanuts += (int)Math.Round(multiplier) * 2;
                 // change this when powerups are added so that it reads from powerups
             } else {
@@ -88,7 +89,7 @@ public class HarvestModule : ModuleBase<SocketCommandContext> {
             // Save the user
             User.Save(id, user);
             // Set embed data
-            embed.AddField("**Harvest**", $"\n\n{username} has harvested {peanutsHarvested} peanuts. \nYou now have {user.peanuts}", true)
+            embed.AddField("**Harvest**", $"\n\n +{peanutsHarvested} \uD83E\uDD5C \nCurrent \uD83E\uDD5C: {user.peanuts}", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {username}")
             .WithCurrentTimestamp();
@@ -118,7 +119,7 @@ public class BakeModule : ModuleBase<SocketCommandContext> {
             // Save the user data
             User.Save(id, user);
             // Set embed data
-            embed.AddField("**Bake**", $"\n\n{username} has baked one slice of bread. \nYou now have {user.breadSlices} slices.", true)
+            embed.AddField("**Bake**", $"\n\n+1 \uD83C\uDF5E \nCurrent \uD83C\uDF5E: {user.breadSlices}", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {username}")
             .WithCurrentTimestamp();
@@ -152,7 +153,7 @@ public class MashModule : ModuleBase<SocketCommandContext> {
                 // Save the user data
                 User.Save(id, user);
                 // Send a message to the channel with the number of peanut butter jars the user now has
-                embed.AddField("**Mash**", $"\n\n{username} has mashed 5 peanuts to make one jar of peanut butter. \nYou now have {user.peanutButterJars} peanut butter jars, and {user.peanuts} peanuts.", true)
+                embed.AddField("**Mash**", $"\n\n-5 \uD83E\uDD5C \n+1 \uD83E\uDDC8 \nCurrent \uD83E\uDDC8: {user.peanutButterJars} \nCurrent \uD83E\uDD5C: {user.peanuts}", true)
                 .WithColor(Color.Green)
                 .WithFooter($"Requested by {username}")
                 .WithCurrentTimestamp();
@@ -176,7 +177,7 @@ public class MashModule : ModuleBase<SocketCommandContext> {
 }
 
 public class MakeSandwichModule : ModuleBase<SocketCommandContext> {
-    [Command("makesandwich")]
+    [Command("make")]
     public async Task MakeSandwichAsync() {
         var embed = new EmbedBuilder(){};
         try {
@@ -195,7 +196,7 @@ public class MakeSandwichModule : ModuleBase<SocketCommandContext> {
                 // Save the user data
                 User.Save(id, user);
                 // Send a message to the channel confirming the creation of the new sandwich
-                embed.AddField("**Make Sandwich**", $"\n\n{username} has made a sandwich. \nYou now have {user.sandwiches} sandwiches, {user.breadSlices} bread slices, and {user.peanutButterJars} peanut butter jars.", true)
+                embed.AddField("**Make Sandwich**", $"\n\n+1 \uD83E\uDD6A. \nCurrent \uD83E\uDD6A: {user.sandwiches} \nCurrent \uD83C\uDF5E: {user.breadSlices} \nCurrent \uD83E\uDDC8: {user.peanutButterJars}", true)
                 .WithColor(Color.Green)
                 .WithFooter($"Requested by {username}")
                 .WithCurrentTimestamp();
