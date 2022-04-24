@@ -14,7 +14,6 @@ public class Program {
 	public async Task MainAsync() {
         _client = new DiscordSocketClient(new DiscordSocketConfig {
             LogLevel = LogSeverity.Verbose,
-            GatewayIntents = GatewayIntents.All,
             MessageCacheSize = 100,
             AlwaysDownloadUsers = true,
             LogGatewayIntentWarnings = false
