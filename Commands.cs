@@ -4,10 +4,7 @@ using Discord;
 // Keep in mind your module **must** be public and inherit ModuleBase.
 // If it isn't, it will not be discovered by AddModulesAsync!
 
-// TODO: make a shop with powerups and collectables, with a shop listing command and buy command
-// also money to actually buy stuff and sell sandwiches for
-// add multipliers for each item
-// Also make shop read from json, add a command to change prices and add new items without editing json
+// TODO: actually add items to the shop, make it so that you can buy items from the shop
 
 public class CreateProfileModule : ModuleBase<SocketCommandContext> {
     [Command("createprofile")]
@@ -50,7 +47,7 @@ public class MaterialsModule : ModuleBase<SocketCommandContext> {
             // Load the user
             User user = User.Load(id);
             // Make Embed
-            embed.AddField("**Materials**", $"\n\nMaterials for {Context.User.Username}\n \uD83E\uDD6A: {user.sandwiches}\n \uD83E\uDD5C: {user.peanuts}\n \uD83C\uDF5E: {user.breadSlices}\n \uD83E\uDDC8: {user.peanutButterJars}", true)
+            embed.AddField("**Materials**", $"\n\nMaterials for {Context.User.Username}\n \uD83E\uDD6A: {user.sandwiches}\n \uD83D\uDCB5: {user.money}\n \uD83E\uDD5C: {user.peanuts}\n \uD83C\uDF5E: {user.breadSlices}\n \uD83E\uDDC8: {user.peanutButterJars}", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {Context.User.Username}")
             .WithCurrentTimestamp();
@@ -217,93 +214,7 @@ public class MakeSandwichModule : ModuleBase<SocketCommandContext> {
     }
 }
 
-public class SetModule : ModuleBase<SocketCommandContext> {
-    [Command("set")]
-    public async Task SetMaterialsAsync(string? id = null, string? material = null, string? amount = null) {
-        var embed = new EmbedBuilder(){};
-        User UserRunningCommand = User.Load(Context.User.Id.ToString());
-        User user;
-        try {
-            long ID = Convert.ToInt64(id);
-        } catch (Exception e) {
-            embed.AddField("**ERROR**", $"\n\nInvalid ID.", true)
-            .WithColor(Color.Red)
-            .WithCurrentTimestamp();
-            await ReplyAsync(embed: embed.Build());
-            return;
-        }
-        if (UserRunningCommand.isAdmin) {
-            if (id != null && material != null && amount != null) {
-                try {
-                    bool invalidMaterial = false;
-                    if (id.Length == 18) {
-                        // Load the user
-                        user = User.Load(id);
-                    
-                        // Set materials
-                        switch (material) {
-                            case "bread":
-                                user.breadSlices = int.Parse(amount);
-                                break;
-                            case "butter":
-                                user.peanutButterJars = int.Parse(amount);
-                                break;
-                            case "peanuts":
-                                user.peanuts = int.Parse(amount);
-                                break;
-                            case "sandwiches":
-                                user.sandwiches = int.Parse(amount);
-                                break;
-                            default:
-                                invalidMaterial = true;
-                                embed.AddField("**ERROR**", "\n\nInvalid material.", true)
-                                .WithColor(Color.Red)
-                                .WithFooter($"Requested by {UserRunningCommand.username}")
-                                .WithCurrentTimestamp();
-                                break;
-                        }
-                        User.Save(id, user);
-                    } else {
-                        invalidMaterial = true;
-                        embed.AddField("**ERROR**", "\n\nInvalid ID.", true)
-                        .WithColor(Color.Red)
-                        .WithFooter($"Requested by {UserRunningCommand.username}")
-                        .WithCurrentTimestamp();
-                    }
-                    if (invalidMaterial) {
-                        await ReplyAsync(embed: embed.Build());
-                    } else {
-                        user = User.Load(id);
-                        // Save the user data
-                        User.Save(id, user);
-                        // Send a message to the channel confirming the setting of the materials
-                        embed.AddField("**Set**", $"\n\n{UserRunningCommand.username} has set {user.username}'s ``{material}`` to {amount}.", true)
-                        .WithColor(Color.Green)
-                        .WithFooter($"Requested by {UserRunningCommand.username}")
-                        .WithCurrentTimestamp();
-                        await ReplyAsync(embed: embed.Build());
-                    }
-                } catch (Exception e) {
-                    user = User.Load(id);
-                    embed.AddField("**Something has gone wrong!**", $"\n\nMost likely, you inputted an invalid user ID, or they have not created a profile yet. \nThe amount of material to be added may have been invalid as well.", true)
-                    .WithColor(Color.Red)
-                    .WithFooter($"Requested by {Context.User.Username}")
-                    .WithCurrentTimestamp();
-                    await ReplyAsync(embed: embed.Build());
-                }
-            } else {
-                embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not provided all the required arguments. \nPlease use the command in the following format: ```*set <user id> <material> <amount>```", true)
-                .WithColor(Color.Red)
-                .WithFooter($"Requested by {Context.User.Username}")
-                .WithCurrentTimestamp();
-                await ReplyAsync(embed: embed.Build());
-            }
-        } else {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} is not an admin.", true);
-            await ReplyAsync(embed: embed.Build());
-        }
-    }
-}
+
 
 public class RemoveUserModule : ModuleBase<SocketCommandContext> {
     [Command("removeuser")]
@@ -351,6 +262,7 @@ public class RemoveUserModule : ModuleBase<SocketCommandContext> {
 }
 
 public class SetAdminModule : ModuleBase<SocketCommandContext> {
+
     [Command("setadmin", true)]
     public async Task SetAdminAsync(string id) {
         var embed = new EmbedBuilder(){};
@@ -373,6 +285,110 @@ public class SetAdminModule : ModuleBase<SocketCommandContext> {
             }
         } else {
             embed.AddField("**ERROR**", $"\n\n{Context.User.Username} is not an admin.", true);
+            await ReplyAsync(embed: embed.Build());
+        }
+    }
+}
+
+public class DisplayShopModule : ModuleBase<SocketCommandContext> {
+    [Command("shop", true)]
+    public async Task DisplayShopAsync() {
+        var embed = new EmbedBuilder(){};
+        string shopItems = "";
+        string shopDescriptions = "";
+        try {
+            foreach (string line in File.ReadLines("shop.txt")) {
+                shopItems = shopItems + line + Environment.NewLine;
+            }
+            foreach (string line in File.ReadLines("shopDescriptions.txt")) {
+                shopDescriptions = shopDescriptions + line + Environment.NewLine;
+            }
+            embed.AddField("**Item**", $"\n\n{shopItems}", true)
+            .AddField("**Description**", $"\n\n{shopDescriptions}", true)
+            .WithColor(Color.Green)
+            .WithFooter($"Requested by {Context.User.Username}")
+            .WithCurrentTimestamp();
+            await ReplyAsync(embed: embed.Build());
+        } catch (Exception e) {
+            embed.AddField("**ERROR**", $"The Shop listing could not be found. Please contact the person running this bot.", true)
+            .WithColor(Color.Red)
+            .WithCurrentTimestamp();
+            Console.WriteLine(e.Message);
+            await ReplyAsync(embed: embed.Build());
+        }
+    }
+}
+
+public class SellSandwichesModule : ModuleBase<SocketCommandContext> {
+    [Command("sell")]
+    public async Task SellSandwichesAsync(string amountToSell = "1") {
+        var embed = new EmbedBuilder(){};
+        try {
+            User user = User.Load(Context.User.Id.ToString());
+            if (user.sandwiches > 0) {
+                user.sandwiches -= Convert.ToInt64(amountToSell);
+                user.money += Convert.ToInt64(amountToSell) * 5;
+                var moneyEarned = (Convert.ToInt64(amountToSell) * 5).ToString();
+                User.Save(Context.User.Id.ToString(), user);
+                embed.AddField("**Sell Sandwiches**", $"\n\n{Context.User.Username} has sold sandwiches and earned {moneyEarned} dollars.", true)
+                .WithColor(Color.Green)
+                .WithFooter($"Requested by {Context.User.Username}")
+                .WithCurrentTimestamp();
+                await ReplyAsync(embed: embed.Build());
+            } else {
+                embed.AddField("**ERROR**", $"\n\n{Context.User.Username} doesn't have any sandwiches to sell.", true)
+                .WithColor(Color.Red)
+                .WithFooter($"Requested by {Context.User.Username}")
+                .WithCurrentTimestamp();
+                await ReplyAsync(embed: embed.Build());
+            }
+        } catch (FileNotFoundException e) {
+            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            .WithColor(Color.Red)
+            .WithFooter($"Requested by {Context.User.Username}")
+            .WithCurrentTimestamp();
+            await ReplyAsync(embed: embed.Build());
+        } catch (FormatException e) {
+            embed.AddField("**ERROR**", $"\n\nYou have inputted an invalid value of sandwiches to sell.\nTry again with a valid value.", true)
+            .WithColor(Color.Red)
+            .WithFooter($"Requested by {Context.User.Username}")
+            .WithCurrentTimestamp();
+            await ReplyAsync(embed: embed.Build());
+        }
+    }
+}
+
+public class AddItemToShopModule : ModuleBase<SocketCommandContext> {
+    [Command("addshopitem")]
+    public async Task AddItemToShopAsync(string itemName, string itemDescription) {
+        var embed = new EmbedBuilder(){};
+        User UserRunningCommand = User.Load(Context.User.Id.ToString());
+        if (UserRunningCommand.isAdmin) {
+            try {
+                string username = Context.User.Username;
+                // Load the user
+                User user = User.Load(Context.User.Id.ToString());
+                // Add item and description to shop
+                File.AppendAllText("shop.txt", $"{itemName}\n");
+                File.AppendAllText("shopDescriptions.txt", $"{itemDescription}\n");
+                // Send a message to the channel confirming the creation of the new item
+                embed.AddField("**Add Item To Shop**", $"\n\n{username} has added {itemName} to the shop.", true)
+                .WithColor(Color.Green)
+                .WithFooter($"Requested by {Context.User.Username}")
+                .WithCurrentTimestamp();
+                await ReplyAsync(embed: embed.Build());
+            } catch (IOException e) {
+                embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+                .WithColor(Color.Red)
+                .WithFooter($"Requested by {Context.User.Username}")
+                .WithCurrentTimestamp();
+                await ReplyAsync(embed: embed.Build());
+            }
+        } else {
+            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} is not an admin.", true)
+            .WithColor(Color.Red)
+            .WithFooter($"Requested by {Context.User.Username}")
+            .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
         }
     }

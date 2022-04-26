@@ -4,12 +4,13 @@ using Discord;
 public class User {
     string id;
     public string username;
-    public long sandwiches, peanuts, breadSlices, peanutButterJars;
+    public long sandwiches, peanuts, breadSlices, peanutButterJars, money;
     public bool isAdmin;
     public User(string userID, string username) {
         id = userID;
         this.username = username;
         isAdmin = false;
+        money = 0;
         /*sandwiches = 0;
         peanuts = 0;
         breadSlices = 0;

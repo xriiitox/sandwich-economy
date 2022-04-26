@@ -10,7 +10,8 @@ public class HelpModule : ModuleBase<SocketCommandContext> {
             if (firstarg == "admin") {
                     embed.AddField("**Admin Commands**", "*removeuser - Removes a user from the database.\n" +
                     "*set - Sets a user's materials.\n" + 
-                    "*setadmin - Sets a user's admin status.\n")
+                    "*setadmin - Sets a user's admin status.\n" +
+                    "*addshopitem - add new item to shop", true)
                     .WithColor(Color.Green)
                     .WithFooter($"Requested by {Context.User.Username}")
                     .WithCurrentTimestamp();
@@ -22,7 +23,9 @@ public class HelpModule : ModuleBase<SocketCommandContext> {
                     "*harvest - get one peanut\n" +
                     "*bake - get one slice of bread\n" + 
                     "*mash - craft one peanut butter\n" +
-                    "*makesandwich - make one sandwich (requires one peanut butter and two slices of bread)", true)
+                    "*makesandwich - make one sandwich (requires one peanut butter and two slices of bread)\n" + 
+                    "*shop - view item listings\n" +
+                    "*sell - sell sandwiches", true)
                     .WithColor(Color.Green)
                     .WithFooter($"Requested by {Context.User.Username}")
                     .WithCurrentTimestamp();
