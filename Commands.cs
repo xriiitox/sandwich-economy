@@ -23,14 +23,14 @@ public class CreateProfileModule : ModuleBase<SocketCommandContext> {
             // Save the user
             User.Save(id, user);
             // Set embed data
-            embed.AddField("**Profile Created**", $"\n\n{username}'s profile has been created.", true)
+            embed.AddField("**Profile Created**", $"{Environment.NewLine}{Environment.NewLine}{username}'s profile has been created.", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {username}")
             .WithCurrentTimestamp();
             // Send the embed
             await ReplyAsync(embed: embed.Build());
         } catch (Exception e) {
-            embed.AddField("**Error**", $"\nUser already exists.", true);
+            embed.AddField("**Error**", $"{Environment.NewLine}User already exists.", true);
             await ReplyAsync(embed: embed.Build());
         }
     }
@@ -47,13 +47,13 @@ public class MaterialsModule : ModuleBase<SocketCommandContext> {
             // Load the user
             User user = User.Load(id);
             // Make Embed
-            embed.AddField("**Materials**", $"\n\nMaterials for {Context.User.Username}\n \uD83E\uDD6A: {user.sandwiches}\n \uD83D\uDCB5: {user.money}\n \uD83E\uDD5C: {user.peanuts}\n \uD83C\uDF5E: {user.breadSlices}\n \uD83E\uDDC8: {user.peanutButterJars}", true)
+            embed.AddField("**Materials**", $"{Environment.NewLine}{Environment.NewLine}Materials for {Context.User.Username}{Environment.NewLine} \uD83E\uDD6A: {user.sandwiches}{Environment.NewLine} \uD83D\uDCB5: {user.money}{Environment.NewLine} \uD83E\uDD5C: {user.peanuts}{Environment.NewLine} \uD83C\uDF5E: {user.breadSlices}{Environment.NewLine} \uD83E\uDDC8: {user.peanutButterJars}", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {Context.User.Username}")
             .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
         } catch (IOException e) {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true);
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true);
             await ReplyAsync(embed: embed.Build());
         }
 
@@ -86,14 +86,14 @@ public class HarvestModule : ModuleBase<SocketCommandContext> {
             // Save the user
             User.Save(id, user);
             // Set embed data
-            embed.AddField("**Harvest**", $"\n\n +{peanutsHarvested} \uD83E\uDD5C \nCurrent \uD83E\uDD5C: {user.peanuts}", true)
+            embed.AddField("**Harvest**", $"{Environment.NewLine}{Environment.NewLine} +{peanutsHarvested} \uD83E\uDD5C {Environment.NewLine}Current \uD83E\uDD5C: {user.peanuts}", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {username}")
             .WithCurrentTimestamp();
 
             await ReplyAsync(embed: embed.Build());
         } catch (IOException e) {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true)
             .WithColor(Color.Red)
             .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
@@ -116,14 +116,14 @@ public class BakeModule : ModuleBase<SocketCommandContext> {
             // Save the user data
             User.Save(id, user);
             // Set embed data
-            embed.AddField("**Bake**", $"\n\n+1 \uD83C\uDF5E \nCurrent \uD83C\uDF5E: {user.breadSlices}", true)
+            embed.AddField("**Bake**", $"{Environment.NewLine}{Environment.NewLine}+1 \uD83C\uDF5E {Environment.NewLine}Current \uD83C\uDF5E: {user.breadSlices}", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {username}")
             .WithCurrentTimestamp();
 
             await ReplyAsync(embed: embed.Build());
         } catch (IOException e) {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true)
             .WithColor(Color.Red)
             .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
@@ -150,7 +150,7 @@ public class MashModule : ModuleBase<SocketCommandContext> {
                 // Save the user data
                 User.Save(id, user);
                 // Send a message to the channel with the number of peanut butter jars the user now has
-                embed.AddField("**Mash**", $"\n\n-5 \uD83E\uDD5C \n+1 \uD83E\uDDC8 \nCurrent \uD83E\uDDC8: {user.peanutButterJars} \nCurrent \uD83E\uDD5C: {user.peanuts}", true)
+                embed.AddField("**Mash**", $"{Environment.NewLine}{Environment.NewLine}-5 \uD83E\uDD5C {Environment.NewLine}+1 \uD83E\uDDC8 {Environment.NewLine}Current \uD83E\uDDC8: {user.peanutButterJars} {Environment.NewLine}Current \uD83E\uDD5C: {user.peanuts}", true)
                 .WithColor(Color.Green)
                 .WithFooter($"Requested by {username}")
                 .WithCurrentTimestamp();
@@ -158,13 +158,13 @@ public class MashModule : ModuleBase<SocketCommandContext> {
                 await ReplyAsync(embed: embed.Build());
             } else {
                 // Send a message to the channel saying the user doesn't have enough peanuts
-                embed.AddField("**Problem Encountered!**", $"\n\n{Context.User.Username} doesn't have enough peanuts to mash.", true)
+                embed.AddField("**Problem Encountered!**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} doesn't have enough peanuts to mash.", true)
                 .WithColor(Color.Red)
                 .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             }
         } catch (IOException e) {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true)
             .WithColor(Color.Red)
             .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
@@ -193,20 +193,20 @@ public class MakeSandwichModule : ModuleBase<SocketCommandContext> {
                 // Save the user data
                 User.Save(id, user);
                 // Send a message to the channel confirming the creation of the new sandwich
-                embed.AddField("**Make Sandwich**", $"\n\n+1 \uD83E\uDD6A. \nCurrent \uD83E\uDD6A: {user.sandwiches} \nCurrent \uD83C\uDF5E: {user.breadSlices} \nCurrent \uD83E\uDDC8: {user.peanutButterJars}", true)
+                embed.AddField("**Make Sandwich**", $"{Environment.NewLine}{Environment.NewLine}+1 \uD83E\uDD6A. {Environment.NewLine}Current \uD83E\uDD6A: {user.sandwiches} {Environment.NewLine}Current \uD83C\uDF5E: {user.breadSlices} {Environment.NewLine}Current \uD83E\uDDC8: {user.peanutButterJars}", true)
                 .WithColor(Color.Green)
                 .WithFooter($"Requested by {username}")
                 .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             } else {
                 // Send a message to the channel saying the user doesn't have enough materials
-                embed.AddField("**Problem Encountered!**", $"\n\n{Context.User.Username} doesn't have enough bread slices and/or peanut butter jars to make a sandwich.", true)
+                embed.AddField("**Problem Encountered!**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} doesn't have enough bread slices and/or peanut butter jars to make a sandwich.", true)
                 .WithColor(Color.Red)
                 .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             }
         } catch (IOException e) {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true)
             .WithColor(Color.Red)
             .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
@@ -222,7 +222,7 @@ public class RemoveUserModule : ModuleBase<SocketCommandContext> {
         var embed = new EmbedBuilder(){};
         User UserRunningCommand = User.Load(Context.User.Id.ToString());
         if (id == null) {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not provided a user ID.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not provided a user ID.", true)
             .WithColor(Color.Red)
             .WithFooter($"Requested by ${Context.User.Username}")
             .WithCurrentTimestamp();
@@ -238,20 +238,20 @@ public class RemoveUserModule : ModuleBase<SocketCommandContext> {
                     // Delete the user's data
                     User.Remove(id);
                     // Send a message to the channel confirming the deletion of the user
-                    embed.AddField("**Remove User**", $"\n\n{username} has removed {deletedUsername}'s profile.", true)
+                    embed.AddField("**Remove User**", $"{Environment.NewLine}{Environment.NewLine}{username} has removed {deletedUsername}'s profile.", true)
                     .WithColor(Color.Green)
                     .WithFooter($"Requested by {username}")
                     .WithCurrentTimestamp();
                     await ReplyAsync(embed: embed.Build());
                 } catch (IOException e) {
-                    embed.AddField("**ERROR**", $"\n\nUser with id {id} has not created a profile.", true)
+                    embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}User with id {id} has not created a profile.", true)
                     .WithColor(Color.Red)
                     .WithFooter($"Requested by ${Context.User.Username}")
                     .WithCurrentTimestamp();
                     await ReplyAsync(embed: embed.Build());
                 }
             } else {
-                embed.AddField("**ERROR**", $"\n\n{Context.User.Username} is not an admin.", true)
+                embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} is not an admin.", true)
                 .WithColor(Color.Red)
                 .WithFooter($"Requested by ${Context.User.Username}")
                 .WithCurrentTimestamp();
@@ -277,14 +277,14 @@ public class SetAdminModule : ModuleBase<SocketCommandContext> {
                 // Save the user data
                 User.Save(id, user);
                 // Send a message to the channel confirming the creation of the new sandwich
-                embed.AddField("**Set Admin**", $"\n\n{username} has set {user.username} as an admin.", true);
+                embed.AddField("**Set Admin**", $"{Environment.NewLine}{Environment.NewLine}{username} has set {user.username} as an admin.", true);
             } catch (IOException e) {
                 User user = User.Load(id);
-                embed.AddField("**ERROR**", $"\n\n{user.username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true);
+                embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{user.username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true);
                 await ReplyAsync(embed: embed.Build());
             }
         } else {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} is not an admin.", true);
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} is not an admin.", true);
             await ReplyAsync(embed: embed.Build());
         }
     }
@@ -303,14 +303,14 @@ public class DisplayShopModule : ModuleBase<SocketCommandContext> {
             foreach (string line in File.ReadLines("shopDescriptions.txt")) {
                 shopDescriptions = shopDescriptions + line + Environment.NewLine;
             }
-            embed.AddField("**Item**", $"\n\n{shopItems}", true)
-            .AddField("**Description**", $"\n\n{shopDescriptions}", true)
+            embed.AddField("**Item**", $"{Environment.NewLine}{Environment.NewLine}{shopItems}", true)
+            .AddField("**Description**", $"{Environment.NewLine}{Environment.NewLine}{shopDescriptions}", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {Context.User.Username}")
             .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
         } catch (Exception e) {
-            embed.AddField("**ERROR**", $"The Shop listing could not be found. Please contact the person running this bot.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}The Shop listing could not be found. Please contact the person running this bot.", true)
             .WithColor(Color.Red)
             .WithCurrentTimestamp();
             Console.WriteLine(e.Message);
@@ -330,26 +330,26 @@ public class SellSandwichesModule : ModuleBase<SocketCommandContext> {
                 user.money += Convert.ToInt64(amountToSell) * 5;
                 var moneyEarned = (Convert.ToInt64(amountToSell) * 5).ToString();
                 User.Save(Context.User.Id.ToString(), user);
-                embed.AddField("**Sell Sandwiches**", $"\n\n{Context.User.Username} has sold sandwiches and earned {moneyEarned} dollars.", true)
+                embed.AddField("**Sell Sandwiches**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has sold sandwiches and earned {moneyEarned} dollars.", true)
                 .WithColor(Color.Green)
                 .WithFooter($"Requested by {Context.User.Username}")
                 .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             } else {
-                embed.AddField("**ERROR**", $"\n\n{Context.User.Username} doesn't have any sandwiches to sell.", true)
+                embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} doesn't have any sandwiches to sell.", true)
                 .WithColor(Color.Red)
                 .WithFooter($"Requested by {Context.User.Username}")
                 .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             }
         } catch (FileNotFoundException e) {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true)
             .WithColor(Color.Red)
             .WithFooter($"Requested by {Context.User.Username}")
             .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
         } catch (FormatException e) {
-            embed.AddField("**ERROR**", $"\n\nYou have inputted an invalid value of sandwiches to sell.\nTry again with a valid value.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}You have inputted an invalid value of sandwiches to sell.{Environment.NewLine}Try again with a valid value.", true)
             .WithColor(Color.Red)
             .WithFooter($"Requested by {Context.User.Username}")
             .WithCurrentTimestamp();
@@ -369,23 +369,23 @@ public class AddItemToShopModule : ModuleBase<SocketCommandContext> {
                 // Load the user
                 User user = User.Load(Context.User.Id.ToString());
                 // Add item and description to shop
-                File.AppendAllText("shop.txt", $"{itemName}\n");
-                File.AppendAllText("shopDescriptions.txt", $"{itemDescription}\n");
+                File.AppendAllText("shop.txt", $"{itemName}{Environment.NewLine}");
+                File.AppendAllText("shopDescriptions.txt", $"{itemDescription}{Environment.NewLine}");
                 // Send a message to the channel confirming the creation of the new item
-                embed.AddField("**Add Item To Shop**", $"\n\n{username} has added {itemName} to the shop.", true)
+                embed.AddField("**Add Item To Shop**", $"{Environment.NewLine}{Environment.NewLine}{username} has added {itemName} to the shop.", true)
                 .WithColor(Color.Green)
                 .WithFooter($"Requested by {Context.User.Username}")
                 .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             } catch (IOException e) {
-                embed.AddField("**ERROR**", $"\n\n{Context.User.Username} has not created a profile yet. \nPlease create a profile with the command 'createprofile'.", true)
+                embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true)
                 .WithColor(Color.Red)
                 .WithFooter($"Requested by {Context.User.Username}")
                 .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             }
         } else {
-            embed.AddField("**ERROR**", $"\n\n{Context.User.Username} is not an admin.", true)
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} is not an admin.", true)
             .WithColor(Color.Red)
             .WithFooter($"Requested by {Context.User.Username}")
             .WithCurrentTimestamp();
