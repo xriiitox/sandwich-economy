@@ -296,6 +296,7 @@ public class DisplayShopModule : ModuleBase<SocketCommandContext> {
         var embed = new EmbedBuilder(){};
         string shopItems = "";
         string shopDescriptions = "";
+        string prices = "";
         try {
             foreach (string line in File.ReadLines("shop.txt")) {
                 shopItems = shopItems + line + Environment.NewLine;
@@ -303,8 +304,12 @@ public class DisplayShopModule : ModuleBase<SocketCommandContext> {
             foreach (string line in File.ReadLines("shopDescriptions.txt")) {
                 shopDescriptions = shopDescriptions + line + Environment.NewLine;
             }
+            foreach (string line in File.ReadLines("prices.txt")) {
+                prices = prices + line + Environment.NewLine;
+            }
             embed.AddField("**Item**", $"{Environment.NewLine}{Environment.NewLine}{shopItems}", true)
             .AddField("**Description**", $"{Environment.NewLine}{Environment.NewLine}{shopDescriptions}", true)
+            .AddField("**Price**", $"{Environment.NewLine}{Environment.NewLine}{prices}", true)
             .WithColor(Color.Green)
             .WithFooter($"Requested by {Context.User.Username}")
             .WithCurrentTimestamp();
@@ -360,7 +365,7 @@ public class SellSandwichesModule : ModuleBase<SocketCommandContext> {
 
 public class AddItemToShopModule : ModuleBase<SocketCommandContext> {
     [Command("addshopitem")]
-    public async Task AddItemToShopAsync(string itemName, string itemDescription) {
+    public async Task AddItemToShopAsync(string itemName, string itemDescription, string itemPrice) {
         var embed = new EmbedBuilder(){};
         User UserRunningCommand = User.Load(Context.User.Id.ToString());
         if (UserRunningCommand.isAdmin) {
@@ -371,6 +376,7 @@ public class AddItemToShopModule : ModuleBase<SocketCommandContext> {
                 // Add item and description to shop
                 File.AppendAllText("shop.txt", $"{itemName}{Environment.NewLine}");
                 File.AppendAllText("shopDescriptions.txt", $"{itemDescription}{Environment.NewLine}");
+                File.AppendAllText("prices.txt", $"{itemPrice}{Environment.NewLine}");
                 // Send a message to the channel confirming the creation of the new item
                 embed.AddField("**Add Item To Shop**", $"{Environment.NewLine}{Environment.NewLine}{username} has added {itemName} to the shop.", true)
                 .WithColor(Color.Green)
