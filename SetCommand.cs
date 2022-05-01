@@ -1,27 +1,21 @@
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 
 
 public class SetModule : ModuleBase<SocketCommandContext> {
     [Command("set")]
-    public async Task SetMaterialsAsync(string? id = null, string? material = null, string? amount = null) {
+    public async Task SetMaterialsAsync(SocketGuildUser guildUser, string? material = null, string? amount = null) {
         var embed = new EmbedBuilder(){};
-        User UserRunningCommand = User.Load(Context.User.Id.ToString());
+
+        User UserRunningCommand = User.Load(Context.User.Id);
         User user;
-        try {
-            long ID = Convert.ToInt64(id);
-        } catch (Exception e) {
-            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}Invalid ID.", true)
-            .WithColor(Color.Red)
-            .WithCurrentTimestamp();
-            await ReplyAsync(embed: embed.Build());
-            return;
-        }
+        ulong id = guildUser.Id;
         if (UserRunningCommand.isAdmin) {
-            if (id != null && material != null && amount != null) {
+            if (guildUser != null && material != null && amount != null && guildUser != null) {
                 try {
                     bool invalidMaterial = false;
-                    if (id.Length == 18) {
+                    if (id.ToString().Length == 18) {
                         // Load the user
                         user = User.Load(id);
                     

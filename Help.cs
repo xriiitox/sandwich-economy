@@ -4,7 +4,7 @@ using Discord.Commands;
 
 public class HelpModule : ModuleBase<SocketCommandContext> {
     [Command("help", true)]
-    public async Task HelpAsync(string firstarg = "normal") {
+    public async Task HelpAsync(string firstarg = "") {
         var embed = new EmbedBuilder(){};
         try {
             if (firstarg == "admin") {
@@ -16,7 +16,7 @@ public class HelpModule : ModuleBase<SocketCommandContext> {
                     .WithFooter($"Requested by {Context.User.Username}")
                     .WithCurrentTimestamp();
                     await ReplyAsync(embed: embed.Build());
-            } else if (firstarg == "normal") {
+            } else {
                 embed.AddField("**Commands**", $"{Environment.NewLine}{Environment.NewLine}*createprofile - Creates a profile for the user.{Environment.NewLine}" +
                     $"*help - Shows this message.{Environment.NewLine}" +
                     $"*materials - Shows the amount of materials the user has.{Environment.NewLine}" +

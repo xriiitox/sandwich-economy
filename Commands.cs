@@ -1,5 +1,6 @@
 using Discord.Commands;
 using Discord;
+using Discord.WebSocket;
 
 // Keep in mind your module **must** be public and inherit ModuleBase.
 // If it isn't, it will not be discovered by AddModulesAsync!
@@ -12,10 +13,10 @@ public class CreateProfileModule : ModuleBase<SocketCommandContext> {
         var embed = new EmbedBuilder(){};
         try {
             // Get the user's ID
-            string id = Context.User.Id.ToString();
+            ulong id = Context.User.Id;
             string username = Context.User.Username;
             // Create a new user with that ID
-            User user = new User(id, username);
+            User user = new User(username);
             // Check if the user already exists
             if (File.Exists( "users/" + id +".json" )){
                 throw new Exception();
@@ -42,7 +43,7 @@ public class MaterialsModule : ModuleBase<SocketCommandContext> {
         var embed = new EmbedBuilder(){};
         try {
             // Get the user's ID
-            string id = Context.User.Id.ToString();
+            ulong id = Context.User.Id;
             string username = Context.User.Username;
             // Load the user
             User user = User.Load(id);
@@ -68,7 +69,7 @@ public class HarvestModule : ModuleBase<SocketCommandContext> {
         var embed = new EmbedBuilder(){};
         try {
             // Get the user's ID
-            string id = Context.User.Id.ToString();
+            ulong id = Context.User.Id;
             string username = Context.User.Username;
             // Load the user
             User user = User.Load(id);
@@ -107,7 +108,7 @@ public class BakeModule : ModuleBase<SocketCommandContext> {
         var embed = new EmbedBuilder(){};
         try {
             // Get the user's ID
-            string id = Context.User.Id.ToString();
+            ulong id = Context.User.Id;
             string username = Context.User.Username;
             // Load the user
             User user = User.Load(id);
@@ -137,7 +138,7 @@ public class MashModule : ModuleBase<SocketCommandContext> {
         var embed = new EmbedBuilder(){};
         try {
             // Get the user's ID
-            string id = Context.User.Id.ToString();
+            ulong id = Context.User.Id;
             string username = Context.User.Username;
             // Load the user
             User user = User.Load(id);
@@ -174,12 +175,13 @@ public class MashModule : ModuleBase<SocketCommandContext> {
 }
 
 public class MakeSandwichModule : ModuleBase<SocketCommandContext> {
-    [Command("make")]
+    [Command("makesandwich")]
+    [Alias("make")]
     public async Task MakeSandwichAsync() {
         var embed = new EmbedBuilder(){};
         try {
             // Get the user's ID
-            string id = Context.User.Id.ToString();
+            ulong id = Context.User.Id;
             string username = Context.User.Username;
             // Load the user
             User user = User.Load(id);
@@ -214,15 +216,14 @@ public class MakeSandwichModule : ModuleBase<SocketCommandContext> {
     }
 }
 
-
-
 public class RemoveUserModule : ModuleBase<SocketCommandContext> {
     [Command("removeuser")]
-    public async Task RemoveUserAsync(string? id = null) {
+    public async Task RemoveUserAsync(SocketGuildUser guildUser) {
         var embed = new EmbedBuilder(){};
-        User UserRunningCommand = User.Load(Context.User.Id.ToString());
-        if (id == null) {
-            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not provided a user ID.", true)
+        User UserRunningCommand = User.Load(Context.User.Id);
+        ulong id = guildUser.Id;
+        if (guildUser == null) {
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has not provided a valid user.", true)
             .WithColor(Color.Red)
             .WithFooter($"Requested by ${Context.User.Username}")
             .WithCurrentTimestamp();
@@ -264,27 +265,39 @@ public class RemoveUserModule : ModuleBase<SocketCommandContext> {
 public class SetAdminModule : ModuleBase<SocketCommandContext> {
 
     [Command("setadmin", true)]
-    public async Task SetAdminAsync(string id) {
+    public async Task SetAdminAsync(SocketGuildUser userToBeAdmin) {
         var embed = new EmbedBuilder(){};
-        User UserRunningCommand = User.Load(Context.User.Id.ToString());
+        User UserRunningCommand = User.Load(Context.User.Id);
         if (UserRunningCommand.isAdmin) {
+            ulong id = userToBeAdmin.Id;
             try {
-                string username = Context.User.Username;
+                string username = UserRunningCommand.username;
                 // Load the user
                 User user = User.Load(id);
                 // Set the user's admin status
                 user.isAdmin = true;
                 // Save the user data
                 User.Save(id, user);
-                // Send a message to the channel confirming the creation of the new sandwich
-                embed.AddField("**Set Admin**", $"{Environment.NewLine}{Environment.NewLine}{username} has set {user.username} as an admin.", true);
-            } catch (IOException e) {
+                // Set Embed
+                embed.AddField("**Set Admin**", $"{Environment.NewLine}{Environment.NewLine}{username} has set {user.username} as an admin.", true)
+                .WithColor(Color.Green)
+                .WithFooter($"Requested by {username}")
+                .WithCurrentTimestamp();
+                // Send a message to the channel confirming the setting of the user's admin status
+                await ReplyAsync(embed: embed.Build());
+            } catch (Exception e) {
                 User user = User.Load(id);
-                embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{user.username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true);
+                embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{user.username} has not created a profile yet. {Environment.NewLine}Please create a profile with the command 'createprofile'.", true)
+                .WithColor(Color.Red)
+                .WithFooter($"Requested by ${Context.User.Username}")
+                .WithCurrentTimestamp();
                 await ReplyAsync(embed: embed.Build());
             }
         } else {
-            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} is not an admin.", true);
+            embed.AddField("**ERROR**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} is not an admin.", true)
+            .WithColor(Color.Red)
+            .WithFooter($"Requested by ${Context.User.Username}")
+            .WithCurrentTimestamp();
             await ReplyAsync(embed: embed.Build());
         }
     }
@@ -329,12 +342,12 @@ public class SellSandwichesModule : ModuleBase<SocketCommandContext> {
     public async Task SellSandwichesAsync(string amountToSell = "1") {
         var embed = new EmbedBuilder(){};
         try {
-            User user = User.Load(Context.User.Id.ToString());
+            User user = User.Load(Context.User.Id);
             if (user.sandwiches > 0) {
                 user.sandwiches -= Convert.ToInt64(amountToSell);
                 user.money += Convert.ToInt64(amountToSell) * 5;
                 var moneyEarned = (Convert.ToInt64(amountToSell) * 5).ToString();
-                User.Save(Context.User.Id.ToString(), user);
+                User.Save(Context.User.Id, user);
                 embed.AddField("**Sell Sandwiches**", $"{Environment.NewLine}{Environment.NewLine}{Context.User.Username} has sold sandwiches and earned {moneyEarned} dollars.", true)
                 .WithColor(Color.Green)
                 .WithFooter($"Requested by {Context.User.Username}")
@@ -367,12 +380,12 @@ public class AddItemToShopModule : ModuleBase<SocketCommandContext> {
     [Command("addshopitem")]
     public async Task AddItemToShopAsync(string itemName, string itemDescription, string itemPrice) {
         var embed = new EmbedBuilder(){};
-        User UserRunningCommand = User.Load(Context.User.Id.ToString());
+        User UserRunningCommand = User.Load(Context.User.Id);
         if (UserRunningCommand.isAdmin) {
             try {
                 string username = Context.User.Username;
                 // Load the user
-                User user = User.Load(Context.User.Id.ToString());
+                User user = User.Load(Context.User.Id);
                 // Add item and description to shop
                 File.AppendAllText("shop.txt", $"{itemName}{Environment.NewLine}");
                 File.AppendAllText("shopDescriptions.txt", $"{itemDescription}{Environment.NewLine}");

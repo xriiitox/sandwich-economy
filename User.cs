@@ -2,12 +2,10 @@ using Newtonsoft;
 using Newtonsoft.Json;
 using Discord;
 public class User {
-    string id;
     public string username;
     public long sandwiches, peanuts, breadSlices, peanutButterJars, money;
     public bool isAdmin;
-    public User(string userID, string username) {
-        id = userID;
+    public User(string username) {
         this.username = username;
         isAdmin = false;
         money = 0;
@@ -16,17 +14,17 @@ public class User {
         breadSlices = 0;
         peanutButterJars = 0;*/
     }
-    public static void Save(string userID, User user) {
+    public static void Save(ulong userID, User user) {
         string json = JsonConvert.SerializeObject(user);
-        File.WriteAllText("users/" + userID + ".json", json);
+        File.WriteAllText("users/" + userID.ToString() + ".json", json);
     }
 
-    public static User Load(string userID) {
-        string json = File.ReadAllText("users/" + userID + ".json");
+    public static User Load(ulong userID) {
+        string json = File.ReadAllText("users/" + userID.ToString() + ".json");
         return JsonConvert.DeserializeObject(json, typeof(User)) as User;
     }
 
-    public static void Remove(string userID) {
-        File.Delete("users/" + userID + ".json");
+    public static void Remove(ulong userID) {
+        File.Delete("users/" + userID.ToString() + ".json");
     }
 }
